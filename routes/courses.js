@@ -31,10 +31,14 @@ router.get('/:id/edit', async (req, res) => {
   const course = await Course.getCourseById(req.params.id);
 
   res.render('course-edit', {
-    layout: 'empty',
     title: `Edit Course ${course.title}`,
     course,
   });
+});
+
+router.post('/edit', async (req, res) => {
+  await Course.update(req.body);
+  res.redirect(`/courses`);
 });
 
 module.exports = router;

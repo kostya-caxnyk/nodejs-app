@@ -1,7 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
-const { resolve } = require('path');
 
 class Course {
   constructor(title, price, img) {
@@ -49,6 +48,31 @@ class Course {
   static async getCourseById(id) {
     const courses = await Course.getAll();
     return courses.find((course) => course.id === id);
+  }
+
+  static async update(updatedCourse) {
+    const courses = await Course.getAll();
+
+    const newCourses = courses.map((course) => {
+      if (course.id === updatedCourse.id) {
+        return updatedCourse;
+      }
+      return course;
+    });
+
+    return new Promise((resolve, reject) => {
+      fs.writeFile(
+        path.join(__dirname, '..', 'data', 'courses.json'),
+        JSON.stringify(newCourses),
+        (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        },
+      );
+    });
   }
 }
 
