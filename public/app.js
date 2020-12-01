@@ -5,25 +5,39 @@ const toCurrency = (price) => {
   }).format(price);
 };
 
+const toDate = (date) => {
+  return new Intl.DateTimeFormat('ru-RU', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(new Date(date));
+};
+
+document.querySelectorAll('.date').forEach((node) => {
+  node.textContent = toDate(node.textContent);
+});
+
 document.querySelectorAll('.price').forEach((node) => {
   node.textContent = toCurrency(+node.textContent);
 });
 
-const $card = document.querySelector('#card');
+const $cart = document.querySelector('#cart');
 
-if ($card) {
-  $card.addEventListener('click', (e) => {
+if ($cart) {
+  $cart.addEventListener('click', (e) => {
     if (!e.target.classList.contains('js-remove')) {
       return;
     }
     const id = e.target.dataset.id;
 
-    fetch('/card/remove/' + id, {
+    fetch('/cart/remove/' + id, {
       method: 'delete',
     })
       .then((res) => res.json())
       .then(({ courses, price }) => {
-        console.log(price);
         if (price) {
           const html = courses
             .map((c) => {
@@ -35,11 +49,13 @@ if ($card) {
             </tr>`;
             })
             .join('');
-          $card.querySelector('tbody').innerHTML = html;
-          $card.querySelector('.price').textContent = toCurrency(price);
+          $cart.querySelector('tbody').innerHTML = html;
+          $cart.querySelector('.price').textContent = toCurrency(price);
         } else {
-          $card.innerHTML = '<h2>Card is empty!</h2>';
+          $cart.innerHTML = '<h2>Cart is empty!</h2>';
         }
       });
   });
 }
+
+var instance = M.Tabs.init(document.querySelectorAll('.tabs'));

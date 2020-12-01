@@ -12,11 +12,11 @@
           <p class="price">{{price}}</p>
         </div> 
         <div class="card-action">
-          <a href="/courses/{{id}}" target="_blank">Open course</a>
-          <a href="/courses/{{id}}/edit?allow=true" target="_blank">Edit</a>
-          <form action="/card/add" method='POST' style='display: inline-block'>
+          <a href="/courses/{{_id}}" target="_blank">Open course</a>
+          <a href="/courses/{{_id}}/edit?allow=true" target="_blank">Edit</a>
+          <form action="/cart/add" method='POST' style='display: inline-block'>
             <button class='btn btn-primary' type='submit'>Buy</button>
-            <input type="hidden" name='id' value='{{id}}'>
+            <input type="hidden" name='id' value='{{_id}}'>
           </form>
         </div>
       </div>

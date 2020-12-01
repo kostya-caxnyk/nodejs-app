@@ -20,12 +20,24 @@
         <li><a href="/add">Add Course</a></li>
         {{/if}}
 
-        {{#if isCard}}
-        <li class="active"><a href="/card">Card</a></li>
+        {{#if isCart}}
+        <li class="active"><a href="/cart">Cart</a></li>
         {{else}}
-        <li><a href="/card">Card</a></li>
+        <li><a href="/cart">Cart</a></li>
         {{/if}}
         
+        {{#if isOrders}}
+        <li class="active"><a href="/orders">Orders</a></li>
+        {{else}}
+        <li><a href="/orders">Orders</a></li>
+        {{/if}}
+
+        {{#if isLogin}}
+        <li class="active"><a href="/auth/login#login">Authorization</a></li>
+        {{else}}
+        <li><a href="/auth/login#login">Authorization</a></li>
+        {{/if}}   
+
       </ul>
     </div>
   </nav>

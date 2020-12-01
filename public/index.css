@@ -25,3 +25,11 @@
 .course .price.big {
   font-size: 35px;
 }
+
+.courses-form {
+  margin-bottom: 20px;
+}
+
+.auth {
+  margin-top: 10px;
+}
