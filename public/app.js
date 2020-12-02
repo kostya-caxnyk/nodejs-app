@@ -31,13 +31,16 @@ if ($cart) {
     if (!e.target.classList.contains('js-remove')) {
       return;
     }
-    const id = e.target.dataset.id;
+    const { id, csrf } = e.target.dataset;
 
     fetch('/cart/remove/' + id, {
       method: 'delete',
+      headers: {
+        'X-XSRF-TOKEN': csrf,
+      },
     })
       .then((res) => res.json())
-      .then(({ courses, price }) => {
+      .then(({ courses, price, csrf }) => {
         if (price) {
           const html = courses
             .map((c) => {
@@ -45,7 +48,7 @@ if ($cart) {
             <tr>
               <td>${c.title}</td>
               <td>${c.count}</td>
-              <td><button class="btn btn-small js-remove" data-id="${c.id}">Delete</button></td>
+              <td><button class="btn btn-small js-remove" data-id="${c.id}" data-csrf="${csrf}">Delete</button></td>
             </tr>`;
             })
             .join('');
