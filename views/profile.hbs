@@ -1,0 +1,31 @@
+<h1>Your profile</h1>
+
+<div class="row">
+  <div class="col s6">
+    <img src="https://www.pavilionweb.com/wp-content/uploads/2017/03/man-300x300.png" alt="" class="avatar">
+    <p>No avatar photo</p>
+  </div>
+  <div class="col s6">
+    <form action="/profile" method="POST">
+      <p>Your email: <strong>{{user.email}}</strong></p>
+      <div class="input-field">
+        <input id="name" type="text" class="validate" name='name' value='{{user.name}}' required>
+        <label for="name">Name</label>
+        <span class="helper-text" data-error="name input cannot be empty"></span>
+      </div>
+      <div class="file-field input-field">
+        <div class="btn">
+          <span>Avatar</span>
+          <input type="file" name='avatar'>
+        </div>
+        <div class="file-path-wrapper">
+          <input class="file-path validate" type="text">
+        </div>
+      </div>
+
+      <input type="hidden" name="_csrf" value="{{@root.csrf}}">
+
+      <button class="btn btn-primary" type="submit">Edit</button>
+    </form>
+  </div>
+</div>

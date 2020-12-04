@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
 const nodemailer = require('nodemailer');
 const sendgrid = require('nodemailer-sendgrid-transport');
 const crypto = require('crypto');
@@ -7,6 +8,7 @@ const User = require('../models/user');
 const keys = require('../keys');
 const regEmail = require('../emails/registration');
 const resetEmail = require('../emails/reset');
+const { regusterValidators, loginValidators } = require('../utils/validators');
 
 const router = Router();
 const transporter = nodemailer.createTransport(
@@ -32,9 +34,16 @@ router.get('/logout', (req, res) => {
   });
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', loginValidators, async (req, res) => {
   try {
     const { email, password } = req.body;
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      req.flash('loginError', errors.array()[0].msg);
+      return res.status(422).redirect('/auth/login#login');
+    }
+
     const candidate = await User.findOne({ email });
 
     if (candidate) {
@@ -54,37 +63,28 @@ router.post('/login', async (req, res) => {
         req.flash('loginError', `Invalid password`);
         res.redirect('/auth/login');
       }
-    } else {
-      req.flash('loginError', 'Invalid input, no such user');
-      res.redirect('/auth/login#login');
     }
   } catch (e) {
     console.log(e);
   }
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', regusterValidators, async (req, res) => {
   try {
-    const { name, email, password, repeat } = req.body;
+    const { name, email, password } = req.body;
 
-    if (password !== repeat) {
-      req.flash('registerError', "Passwords don't match");
-      return res.redirect('/auth/login#register');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      req.flash('registerError', errors.array()[0].msg);
+      return res.status(422).redirect('/auth/login#register');
     }
 
-    const candidate = await User.findOne({ email });
+    const hashPassword = await bcrypt.hash(password, 10);
+    const user = new User({ name, email, password: hashPassword, card: { items: [] } });
 
-    if (candidate) {
-      req.flash('registerError', 'User with this email already exist');
-      res.redirect('/auth/login#register');
-    } else {
-      const hashPassword = await bcrypt.hash(password, 10);
-      const user = new User({ name, email, password: hashPassword, card: { items: [] } });
-
-      await user.save();
-      res.redirect('/auth/login#login');
-      await transporter.sendMail(regEmail(email));
-    }
+    await user.save();
+    res.redirect('/auth/login#login');
+    await transporter.sendMail(regEmail(email));
   } catch (e) {
     console.log(e);
   }
