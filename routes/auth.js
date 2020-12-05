@@ -55,7 +55,7 @@ router.post('/login', loginValidators, async (req, res) => {
 
         req.session.save((err) => {
           if (err) {
-            throw new err();
+            throw err;
           }
           res.redirect('/');
         });
