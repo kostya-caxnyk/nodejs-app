@@ -7,7 +7,10 @@ const { coursesValidators } = require('../utils/validators.js');
 const router = Router();
 
 const isOwner = (course, req) => {
-  return course.userID.toString() === req.user?._id.toString();
+  if (!req.user) {
+    return false;
+  }
+  return course.userID.toString() === req.user._id.toString();
 };
 
 router.get('/', async (req, res) => {
